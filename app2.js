@@ -20,7 +20,7 @@ const sequelize = new Sequelize('crypto_database', 'crypto_database_user', 'oDK1
 
 // Define User model
 const User = sequelize.define('User', {
-    username: Sequelize.STRING,
+    nickname: Sequelize.STRING,
     password: Sequelize.STRING,
 });
 
@@ -28,10 +28,10 @@ const User = sequelize.define('User', {
 sequelize.sync();
 
 // Configure Passport
-passport.use(new LocalStrategy((username, password, done) => {
-    User.findOne({ where: { username: username } }).then(user => {
+passport.use(new LocalStrategy((nickname, password, done) => {
+    User.findOne({ where: { username: nickname } }).then(user => {
         if (!user) {
-            return done(null, false, { message: 'Incorrect username.' });
+            return done(null, false, { message: 'Incorrect nickname.' });
         }
         if (user.password !== password) {
             return done(null, false, { message: 'Incorrect password.' });
