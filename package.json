@@ -2,6 +2,14 @@
   "name": "sendp",
   "version": "1.0.0",
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
+    "pg": "^8.11.0",
+    "sequelize": "^6.31.1",
+    "socket.io": "^4.6.1"
   },
   "scripts": {
     "start": "node ../../../!PROJECTS/sendp/app.js",

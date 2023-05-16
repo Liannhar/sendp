@@ -7,7 +7,7 @@ const http = require('https').createServer(app)
 const io = require('socket.io')(http)
 const PORT = 8080;
 const HOST = '0.0.0.0';
-const sequelize = require('../../../!PROJECTS/sendp/pg/database');
+const sequelize = require('../../0PROJECTS/sendp/pg/database');
 const User = require("./models/User");
 const bcrypt = require("bcrypt");
 

@@ -1,6 +1,6 @@
 "use strict";
 let {DataTypes} = require('sequelize');
-let sequelize = require('../../../../!PROJECTS/sendp/pg/database');
+let sequelize = require('../../../0PROJECTS/sendp/pg/database');
 
 let User = sequelize.define('User', {
     nickname: {
