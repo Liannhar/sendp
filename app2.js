@@ -28,7 +28,7 @@ const User = sequelize.define('User', {
 sequelize.sync();
 
 // Configure Passport
-passport.use(new LocalStrategy((nickname, password, done) => {
+passport.use("local",new LocalStrategy((nickname, password, done) => {
     User.findOne({ where: { nickname: nickname } }).then(user => {
         if (!user) {
             return done(null, false, { message: 'Incorrect nickname.' });
@@ -67,8 +67,7 @@ app.get('/login', (req, res) => {
 
 class LoginResponse {
     constructor(user) {
-        this.success = true;
-        this.message = "OK";
+        this.nickname = user.nickname;
         this.token = user.token;
     }
 }
