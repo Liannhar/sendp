@@ -2,5 +2,10 @@
   "name": "sendp",
   "version": "1.0.0",
   "dependencies": {
+  },
+  "scripts": {
+    "start": "node ../../../!PROJECTS/sendp/app.js",
+    "dev": "nodemon ../../../!PROJECTS/sendp/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
