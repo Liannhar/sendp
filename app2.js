@@ -29,7 +29,7 @@ sequelize.sync();
 
 // Configure Passport
 passport.use(new LocalStrategy((nickname, password, done) => {
-    User.findOne({ where: { username: nickname } }).then(user => {
+    User.findOne({ where: { nickname: nickname } }).then(user => {
         if (!user) {
             return done(null, false, { message: 'Incorrect nickname.' });
         }

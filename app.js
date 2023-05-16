@@ -43,10 +43,10 @@ app.get('/failure', (req, res) => {
 });
 
 app.post('/register', function(req, res) {
-    const { username, password } = req.body;
+    const {  nickname, password } = req.body;
 
     // Проверка имени пользователя
-    if (!username || username.length < 3 || username.length > 20) {
+    if (!nickname || nickname.length < 3 || nickname.length > 20) {
         return res.status(400).json({ message: 'Имя пользователя должно содержать от 3 до 20 символов' });
     }
 
@@ -56,7 +56,7 @@ app.post('/register', function(req, res) {
     }
 
     const hashedPassword = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(8));
-    User.create({ username: req.body.username, password: hashedPassword })
+    User.create({ nickname: req.body.nickname, password: hashedPassword })
         .then(user => res.json(user))
         .catch(err => res.status(500).json(err));
 });

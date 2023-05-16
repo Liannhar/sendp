@@ -5,9 +5,9 @@ let {compare} = require("bcrypt");
 
 module.exports = function(passport) {
     passport.use(new LocalStrategy(
-        async (username, password, done) => {
+        async (nickname, password, done) => {
             try {
-                let user = await User.findOne({where: {username}});
+                let user = await User.findOne({where: {nickname: nickname}});
                 if (!user) {
                     return done(null, false, { message: 'Username не зарегистрирован' });
                 }
