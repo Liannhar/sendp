@@ -58,14 +58,31 @@ app.use(passport.session());
 
 // Define routes
 app.get('/', (req, res) => {
-    res.send('Welcome to Crypto');
+    res.send('W');
 });
 
 app.get('/login', (req, res) => {
     res.send('You are login');
 });
 
-app.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' }));
+class LoginResponse {
+    constructor(user) {
+        this.success = true;
+        this.message = "OK";
+        this.token = user.token;
+    }
+}
+
+app.post('/login', passport.authenticate('local'), (req, res) => {
+    // If this function is called, authentication was successful.
+    // `req.user` contains the authenticated user.
+
+    // Create a new LoginResponse object with the user's information.
+    const loginResponse = new LoginResponse(req.user);
+
+    // Send the LoginResponse object as the response.
+    res.json(loginResponse);
+});
 
 app.get('/logout', (req, res) => {
     req.logout();
