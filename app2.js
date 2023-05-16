@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 const bcrypt = require("bcrypt");
 const {query} = require("./pg/database");
+const pool = require("./pg/database");
 
 const app = express();
 
@@ -29,9 +30,7 @@ const User = sequelize.define('User', {
 // Sync database
 sequelize.sync();
 
-// Configure Passport
-passport.use("local",new LocalStrategy((nickname, password, done) => {
-    /*User.findOne({ where: { nickname: nickname } }).then(user => {
+/*User.findOne({ where: { nickname: nickname } }).then(user => {
         if (!user) {
             return done(null, false, { message: 'Incorrect nickname.' });
         }
@@ -40,23 +39,25 @@ passport.use("local",new LocalStrategy((nickname, password, done) => {
         }
         return done(null, user);
     });*/
+
+// Configure Passport
+passport.use("local",new LocalStrategy(async (nickname, password, done) => {
     try {
-            const result = query('SELECT * FROM Users WHERE nickname = $1', [nickname]);
-            if (result.rows.length > 0) {
-                const user = result.rows[0];
-                if (bcrypt.compare(password, user.password)) {
-                    return done(null, user);
-                } else {
-                    return done(null, false, { message: 'Incorrect password.' });
-                }
+        const result = await query('SELECT * FROM users WHERE nickname = $1', [nickname]);
+        if (result.rows.length > 0) {
+            const user = result.rows[0];
+            if (await bcrypt.compare(password, user.password)) {
+                return done(null, user);
             } else {
-                const hashedPassword = bcrypt.hash(password, 10);
-                const newUser =query('INSERT INTO Users (nickname, password) VALUES ($1, $2) RETURNING *', [nickname, hashedPassword]);
-                return done(null, newUser.rows[0]);
+                return done(null, false, { message: 'Incorrect password.' });
             }
+        } else {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const newUser = await query('INSERT INTO users (nickname, password) VALUES ($1, $2) RETURNING *', [nickname, hashedPassword]);
+            return done(null, newUser.rows[0]);
         }
-        catch (err) {
-            return done(err);
+    } catch (err) {
+        return done(err);
     }
 }));
 
