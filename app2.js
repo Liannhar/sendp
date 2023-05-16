@@ -4,6 +4,8 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
+const bcrypt = require("bcrypt");
+const {query} = require("./pg/database");
 
 const app = express();
 
@@ -29,7 +31,7 @@ sequelize.sync();
 
 // Configure Passport
 passport.use("local",new LocalStrategy((nickname, password, done) => {
-    User.findOne({ where: { nickname: nickname } }).then(user => {
+    /*User.findOne({ where: { nickname: nickname } }).then(user => {
         if (!user) {
             return done(null, false, { message: 'Incorrect nickname.' });
         }
@@ -37,7 +39,25 @@ passport.use("local",new LocalStrategy((nickname, password, done) => {
             return done(null, false, { message: 'Incorrect password.' });
         }
         return done(null, user);
-    });
+    });*/
+    try {
+            const result = query('SELECT * FROM Users WHERE nickname = $1', [nickname]);
+            if (result.rows.length > 0) {
+                const user = result.rows[0];
+                if (bcrypt.compare(password, user.password)) {
+                    return done(null, user);
+                } else {
+                    return done(null, false, { message: 'Incorrect password.' });
+                }
+            } else {
+                const hashedPassword = bcrypt.hash(password, 10);
+                const newUser =query('INSERT INTO Users (nickname, password) VALUES ($1, $2) RETURNING *', [nickname, hashedPassword]);
+                return done(null, newUser.rows[0]);
+            }
+        }
+        catch (err) {
+            return done(err);
+    }
 }));
 
 passport.serializeUser((user, done) => {
