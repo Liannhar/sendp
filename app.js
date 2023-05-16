@@ -33,10 +33,12 @@ app.post('/login', passport.authenticate('local', {
 app.get("/" , function(){ console.log("check /") });
 
 app.get('/success', (req, res) => {
+    console.log("Login successful")
     res.send('Login successful');
 });
 
 app.get('/failure', (req, res) => {
+    console.log("Login failed")
     res.send('Login failed');
 });
 
