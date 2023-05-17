@@ -57,7 +57,9 @@ passport.use("local",new LocalStrategy((nickname, password, done) => {
                 password:hashedPassword
             }).then(res=>{
                 console.log(res);
+                console.log("Create successful")
             }).catch(err=>console.log(err));
+            console.log(newUser.nickname+" OK")
             return done(null, newUser);
         }
         if (user.password !== password) {
