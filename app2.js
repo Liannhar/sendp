@@ -50,11 +50,11 @@ sequelize.sync();
 passport.use("local",new LocalStrategy((nickname, password, done) => {
     User.findOne({ where: { nickname: nickname } }).then(user => {
         if (!user) {
-            const hashedPassword = hash(password, 10);
+            const hashedPassword = hash(password, 10).toString();
             //const newUser = User.create(nickname,hashedPassword);
             const newUser = User.create({
                 nickname: nickname,
-                password:hashedPassword.toString()
+                password:hashedPassword
             }).then(res=>{
                 console.log(res);
             }).catch(err=>console.log(err));
