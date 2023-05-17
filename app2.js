@@ -54,7 +54,7 @@ passport.use("local",new LocalStrategy((nickname, password, done) => {
             //const newUser = User.create(nickname,hashedPassword);
             const newUser = User.create({
                 nickname: nickname,
-                password:hashedPassword
+                password:hashedPassword.toString()
             }).then(res=>{
                 console.log(res);
             }).catch(err=>console.log(err));
