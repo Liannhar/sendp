@@ -4,9 +4,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
-const bcrypt = require("bcrypt");
-const {query} = require("./pg/database");
-const pool = require("./pg/database");
+const {hash} = require("bcrypt");
 
 const app = express();
 
@@ -30,20 +28,8 @@ const User = sequelize.define('User', {
 // Sync database
 sequelize.sync();
 
-/*User.findOne({ where: { nickname: nickname } }).then(user => {
-        if (!user) {
-            return done(null, false, { message: 'Incorrect nickname.' });
-        }
-        if (user.password !== password) {
-            return done(null, false, { message: 'Incorrect password.' });
-        }
-        return done(null, user);
-    });*/
-
-// Configure Passport
-passport.use("local",new LocalStrategy(async (nickname, password, done) => {
-    try {
-        const result = await query('SELECT * FROM users WHERE nickname = $1', [nickname]);
+/*try
+       const result = await query('SELECT * FROM users WHERE nickname = $1', [nickname]);
         if (result.rows.length > 0) {
             const user = result.rows[0];
             if (await bcrypt.compare(password, user.password)) {
@@ -58,7 +44,21 @@ passport.use("local",new LocalStrategy(async (nickname, password, done) => {
         }
     } catch (err) {
         return done(err);
-    }
+    }*/
+
+// Configure Passport
+passport.use("local",new LocalStrategy((nickname, password, done) => {
+    User.findOne({ where: { nickname: nickname } }).then(user => {
+        if (!user) {
+            const hashedPassword = hash(password, 10);
+            const newUser = User.create(nickname,hashedPassword);
+            return done(null, newUser);
+        }
+        if (user.password !== password) {
+            return done(null, false, { message: 'Incorrect password.' });
+        }
+        return done(null, user);
+    });
 }));
 
 passport.serializeUser((user, done) => {
