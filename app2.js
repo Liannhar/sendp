@@ -67,6 +67,7 @@ passport.use("local",new LocalStrategy((nickname, password, done) => {
             return done(null, false, { message: 'Incorrect password.' });
         }
         console.log(user.nickname+" OK User")
+        console.log("Where")
         return done(null, user);
     });
 }));
