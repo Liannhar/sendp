@@ -98,10 +98,9 @@ app.get('/login', (req, res) => {
 });
 
 class LoginResponse {
-    constructor(user,message) {
+    constructor(user) {
         this.nickname = user.nickname;
         this.token = user.token;
-        this.message = message;
     }
 }
 app.post('/login', function(req, res, next) {
@@ -111,16 +110,15 @@ app.post('/login', function(req, res, next) {
         }
         if (!user) {
             console.log("Incorrect User/Password")
-            const loginResponse = new LoginResponse(req.user,info);
             // Handle the case when the user is not found or the password is incorrect
-            return res.status(401).json(loginResponse);
+            return res.status(401).json(info);
         }
         req.logIn(user, function(err) {
             if (err) {
                 return next(err);
             }
             // Create a new LoginResponse object with the user's information.
-            const loginResponse = new LoginResponse(req.user,"Create");
+            const loginResponse = new LoginResponse(req.user);
 
             // Send the LoginResponse object as the response.
             res.json(loginResponse);
