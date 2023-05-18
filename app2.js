@@ -28,23 +28,15 @@ const User = sequelize.define('User', {
 // Sync database
 sequelize.sync();
 
-/*try
-       const result = await query('SELECT * FROM users WHERE nickname = $1', [nickname]);
-        if (result.rows.length > 0) {
-            const user = result.rows[0];
-            if (await bcrypt.compare(password, user.password)) {
-                return done(null, user);
-            } else {
-                return done(null, false, { message: 'Incorrect password.' });
-            }
-        } else {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const newUser = await query('INSERT INTO users (nickname, password) VALUES ($1, $2) RETURNING *', [nickname, hashedPassword]);
-            return done(null, newUser.rows[0]);
-        }
-    } catch (err) {
-        return done(err);
-    }*/
+async function getAllUsers() {
+    return await User.findAll();
+}
+
+getAllUsers().then(users => {
+    console.log(users);
+}).catch(error => {
+    console.error(error);
+});
 
 // Configure Passport
 passport.use("local",new LocalStrategy((nickname, password, done) => {
@@ -63,8 +55,8 @@ passport.use("local",new LocalStrategy((nickname, password, done) => {
             return done(null, newUser);
         }
         if (user.password !== password) {
-            console.log("Incorrect")
-            return done(null, false, "Incorrect password.");
+            console.log("Incorrect Password")
+            return done(null, false, "Incorrect password");
         }
         console.log(user.nickname+" OK User")
         console.log("Where")
