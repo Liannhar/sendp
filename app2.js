@@ -4,7 +4,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
-const {hash} = require("bcrypt");
+//const {hash} = require("bcrypt");
 
 const app = express();
 
@@ -110,6 +110,7 @@ app.post('/login', function(req, res, next) {
             return next(err);
         }
         if (!user) {
+            console.log("Incorrect User/Password")
             // Handle the case when the user is not found or the password is incorrect
             return res.status(401).json(info);
         }
