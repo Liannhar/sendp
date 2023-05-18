@@ -64,7 +64,7 @@ passport.use("local",new LocalStrategy((nickname, password, done) => {
         }
         if (user.password !== password) {
             console.log("Incorrect")
-            return done(null, false, { message: 'Incorrect password.' });
+            return done(null, false, "Incorrect password.");
         }
         console.log(user.nickname+" OK User")
         console.log("Where")
@@ -109,7 +109,6 @@ app.post('/login', function(req, res, next) {
             return next(err);
         }
         if (!user) {
-            console.log("Incorrect User/Password")
             // Handle the case when the user is not found or the password is incorrect
             return res.status(401).json(info);
         }
