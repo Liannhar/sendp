@@ -28,8 +28,7 @@ const User = sequelize.define('User', {
     password: Sequelize.STRING,
 });
 
-const Rooms = sequelize.define('Rooms',{
-    idRoom:Sequelize.INTEGER,
+const Room = sequelize.define('Room',{
     firstNickname:Sequelize.STRING,
     secondNickname:Sequelize.STRING,
     currentSocket:Sequelize.STRING,
@@ -142,7 +141,7 @@ io.on('connection', (socket) => {
 
     socket.on('search', (first,second) => {
         console.log("Search...")
-        Rooms.findOne({
+        Room.findOne({
             where: {
                 [Op.or]: [
                     { firstNickname: first, secondNickname: second },
@@ -152,7 +151,7 @@ io.on('connection', (socket) => {
         })
             .then(room => {
                 if (!room) {
-                    Rooms.create({
+                    Room.create({
                         firstNickname: first,
                         secondNickname: second,
                         currentSocket: socket
