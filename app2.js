@@ -138,6 +138,7 @@ const io = require('socket.io')(server)
 io.on('connection', (socket) => {
 
     socket.on('joinRoom', (data) => {
+        console.log(data.first)
         Room.findOne({
             where: {
                 [Op.or]: [
