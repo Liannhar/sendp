@@ -69,7 +69,6 @@ passport.use("local",new LocalStrategy((nickname, password, done) => {
             return done(null, false, "Incorrect password");
         }
         console.log(user.nickname+" OK User")
-        console.log("Where")
         return done(null, user);
     });
 }));
@@ -92,7 +91,7 @@ app.use(passport.session());
 
 // Define routes
 app.get('/', (req, res) => {
-    res.send('W');
+    res.send('Hello!');
 });
 
 app.get('/login', (req, res) => {
@@ -151,6 +150,7 @@ io.on('connection', (socket) => {
         })
             .then(room => {
                 if (!room) {
+                    console.log("Room start Created")
                     Room.create({
                         firstNickname: first,
                         secondNickname: second,
@@ -160,7 +160,9 @@ io.on('connection', (socket) => {
                         console.log("Room create successful")
                     }).catch(err => console.log(err));
                 }
-                room.update({currentSocket: socket})
+                else{
+                    room.update({currentSocket: socket})
+                }
             }).catch(err => console.log(err));
     });
     /*socket.on('register', (username) => {
