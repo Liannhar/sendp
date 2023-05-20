@@ -4,6 +4,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
+const { Op } = require('sequelize');
 //const {hash} = require("bcrypt");
 
 const app = express();
@@ -138,18 +139,16 @@ const server = http.createServer(app);
 const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
+
     socket.on('search', (first,second) => {
+        console.log("Search...")
         Rooms.findOne({
             where: {
-                $or:
-                    {
-                        $and: {
-                            firstNickname: first, secondNickname: second
-                        }, $and: {
-                            firstNickname: second, secondNickname: first
-                        }
-                    }
-            }
+                [Op.or]: [
+                    { firstNickname: first, secondNickname: second },
+                    { firstNickname: second, secondNickname: first },
+                ],
+            },
         })
             .then(room => {
                 if (!room) {
