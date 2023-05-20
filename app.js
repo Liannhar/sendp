@@ -64,21 +64,3 @@ sequelize.sync()
     .then(() => console.log('Синхронизация моделей с базой данных успешно выполнена'))
     .catch(err => console.error('Ошибка синхронизации моделей с базой данных:', err));
 
-io.on("connection", (socket) => {
-    const usersSocket = [];
-    for (let [id,username] of User.getAllUsers()) {
-        usersSocket.push({
-            id:id,
-            username:username,
-        });
-    }
-    socket.emit("users", usersSocket);
-    // ...
-});
-
-io.on("private message", ({ content, to }) => {
-    io.socket.to(to).emit("private message", {
-        content,
-        from: io.socket.id,
-    });
-});

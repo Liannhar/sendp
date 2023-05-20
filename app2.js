@@ -7,6 +7,8 @@ const Sequelize = require('sequelize');
 //const {hash} = require("bcrypt");
 
 const app = express();
+const io = require('socket.io')(app)
+
 
 // Configure database connection
 const sequelize = new Sequelize('crypto_database', 'crypto_database_user', 'oDK1n15do9Z2le7lcq00Lp9z707Pl7pA', {
@@ -24,6 +26,13 @@ const User = sequelize.define('User', {
     nickname: Sequelize.STRING,
     password: Sequelize.STRING,
 });
+
+const Rooms = sequelize.define('Rooms',{
+    idRoom:Sequelize.INTEGER,
+    firstNickname:Sequelize.STRING,
+    secondNickname:Sequelize.STRING,
+    currentSocket:Sequelize.STRING,
+})
 
 // Sync database
 sequelize.sync();
@@ -117,22 +126,56 @@ app.post('/login', function(req, res, next) {
         });
     })(req, res, next);
 });
-/*
-app.post('/login', passport.authenticate('local'), (req, res) => {
-    // If this function is called, authentication was successful.
-    // `req.user` contains the authenticated user.
-
-    // Create a new LoginResponse object with the user's information.
-    const loginResponse = new LoginResponse(req.user);
-
-    // Send the LoginResponse object as the response.
-    res.json(loginResponse);
-});
-*/
 
 app.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/');
+});
+
+
+
+const connectedUsers = {};
+
+io.on('connection', (socket) => {
+    socket.on('search', (first,second) => {
+        Rooms.findOne({
+            where: {
+                $or:
+                    {
+                        $and: {
+                            firstNickname: first, secondNickname: second
+                        }, $and: {
+                            firstNickname: second, secondNickname: first
+                        }
+                    }
+            }
+        })
+            .then(room => {
+                if (!room) {
+                    Rooms.create({
+                        firstNickname: first,
+                        secondNickname: second,
+                        currentSocket: socket
+                    }).then(res => {
+                        console.log(res);
+                        console.log("Room create successful")
+                    }).catch(err => console.log(err));
+                }
+                room.update({currentSocket: socket})
+            }).catch(err => console.log(err));
+    });
+    /*socket.on('register', (username) => {
+        socket.username = username;
+        connectedUsers[username] = socket;
+    });*/
+
+    socket.on('private_chat', (data) => {
+        const to = data.to;
+        const message = data.message;
+        to.emit('private_chat', {
+                message: message,
+        });
+    });
 });
 
 // Start server
