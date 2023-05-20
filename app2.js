@@ -138,7 +138,6 @@ const io = require('socket.io')(server)
 io.on('connection', (socket) => {
 
     socket.on('joinRoom', (data) => {
-        console.log(data.first)
         Room.findOne({
             where: {
                 [Op.or]: [
@@ -174,7 +173,7 @@ io.on('connection', (socket) => {
             },
         })
             .then(room => {
-                io.to(room.id.toString()).emit('private_chat', data.message);
+                io.to(room.id.toString()).emit('private_chat', data.type,data.message, data.first);
             })
             .catch(err => console.log(err));
 
