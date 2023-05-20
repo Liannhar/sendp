@@ -156,6 +156,7 @@ io.on('connection', (socket) => {
                         console.log("Room create successful")
                     }).catch(err => console.log(err));
                 }
+                console.log("join")
                 socket.join(room.id.toString());
             })
             .catch(err => console.log(err));
@@ -172,7 +173,7 @@ io.on('connection', (socket) => {
             },
         })
             .then(room => {
-                io.to(room.id.toString()).emit('messageReceived', data.message);
+                io.to(room.id.toString()).emit('private_chat', data.message);
             })
             .catch(err => console.log(err));
 
