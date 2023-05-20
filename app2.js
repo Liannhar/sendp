@@ -7,8 +7,8 @@ const Sequelize = require('sequelize');
 //const {hash} = require("bcrypt");
 
 const app = express();
-const http = require('https').createServer(app)
-const io = require('socket.io')(http)
+//const http = require('https').createServer(app)
+const io = require('socket.io')(app)
 
 
 // Configure database connection
