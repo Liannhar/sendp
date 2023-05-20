@@ -7,7 +7,8 @@ const Sequelize = require('sequelize');
 //const {hash} = require("bcrypt");
 
 const app = express();
-const io = require('socket.io')(app)
+const http = require('https').createServer(app)
+const io = require('socket.io')(http)
 
 
 // Configure database connection
@@ -180,6 +181,6 @@ io.on('connection', (socket) => {
 
 // Start server
 const port = process.env.PORT || 3000;
-app.listen(port, "0.0.0.0", () => {
+http.listen(port, "0.0.0.0", () => {
     console.log(`Server is running on port ${port}`);
 });
