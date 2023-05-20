@@ -133,9 +133,9 @@ app.get('/logout', (req, res) => {
 });
 
 
-const http = require('https').createServer(app)
-const io = require('socket.io')(http)
-const connectedUsers = {};
+const https = require('https');
+const server = https.createServer(app);
+const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
     socket.on('search', (first,second) => {
@@ -184,6 +184,6 @@ io.on('connection', (socket) => {
 const port = process.env.PORT || 3000;
 
 
-http.listen(port, "0.0.0.0", () => {
+server.listen(port, "0.0.0.0", () => {
     console.log(`Server is running on port ${port}`);
 });
