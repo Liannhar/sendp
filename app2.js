@@ -28,10 +28,9 @@ const User = sequelize.define('User', {
     password: Sequelize.STRING,
 });
 
-const Room = sequelize.define('Room',{
+const Room = sequelize.define('Rooms',{
     firstNickname:Sequelize.STRING,
     secondNickname:Sequelize.STRING,
-    currentSocket:Sequelize.ARRAY,
 })
 
 // Sync database
@@ -138,7 +137,7 @@ const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
 
-    socket.on('search', (first,second) => {
+    /*socket.on('search', (first,second) => {
         console.log("Search...")
         Room.findOne({
             where: {
@@ -152,18 +151,15 @@ io.on('connection', (socket) => {
                 if (!room) {
                     Room.create({
                         firstNickname: first,
-                        secondNickname: second,
-                        currentSocket: socket
+                        secondNickname: second
                     }).then(res => {
                         console.log(res);
                         console.log("Room create successful")
                     }).catch(err => console.log(err));
                 }
-                else{
-                    room.update({currentSocket: socket})
-                }
+
             }).catch(err => console.log(err));
-    });
+    });*/
     /*socket.on('register', (username) => {
         socket.username = username;
         connectedUsers[username] = socket;
@@ -171,11 +167,30 @@ io.on('connection', (socket) => {
 
     socket.on('private_chat', (data) => {
         console.log("Send Message")
-        const to = data.to;
-        const message = data.message;
-        to.emit('private_chat', {
-                message: message,
-        });
+        Room.findOne({
+            where: {
+                [Op.or]: [
+                    { firstNickname: data.first, secondNickname: data.second },
+                    { firstNickname: data.second, secondNickname: data.first },
+                ],
+            },
+        })
+            .then(room => {
+                if (!room) {
+                    Room.create({
+                        firstNickname: data.first,
+                        secondNickname: data.second
+                    }).then(res => {
+                        console.log(res);
+                        console.log("Room create successful")
+                    }).catch(err => console.log(err));
+                }
+                const message = data.message;
+                data.second.emit('private_chat', {
+                    message: message,
+                });
+            })
+            .catch(err => console.log(err));
     });
 });
 
