@@ -31,7 +31,7 @@ const User = sequelize.define('User', {
 const Room = sequelize.define('Room',{
     firstNickname:Sequelize.STRING,
     secondNickname:Sequelize.STRING,
-    currentSocket:Sequelize.STRING,
+    currentSocket:Sequelize.ARRAY,
 })
 
 // Sync database
@@ -150,7 +150,6 @@ io.on('connection', (socket) => {
         })
             .then(room => {
                 if (!room) {
-                    console.log("Room start Created")
                     Room.create({
                         firstNickname: first,
                         secondNickname: second,
