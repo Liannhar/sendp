@@ -137,36 +137,7 @@ const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
 
-    /*socket.on('search', (first,second) => {
-        console.log("Search...")
-        Room.findOne({
-            where: {
-                [Op.or]: [
-                    { firstNickname: first, secondNickname: second },
-                    { firstNickname: second, secondNickname: first },
-                ],
-            },
-        })
-            .then(room => {
-                if (!room) {
-                    Room.create({
-                        firstNickname: first,
-                        secondNickname: second
-                    }).then(res => {
-                        console.log(res);
-                        console.log("Room create successful")
-                    }).catch(err => console.log(err));
-                }
-
-            }).catch(err => console.log(err));
-    });*/
-    /*socket.on('register', (username) => {
-        socket.username = username;
-        connectedUsers[username] = socket;
-    });*/
-
-    socket.on('private_chat', (data) => {
-        console.log("Send Message")
+    socket.on('joinRoom', (data) => {
         Room.findOne({
             where: {
                 [Op.or]: [
@@ -185,13 +156,26 @@ io.on('connection', (socket) => {
                         console.log("Room create successful")
                     }).catch(err => console.log(err));
                 }
-                const message = data.message;
-                console.log(message)
-                io.to(data.second).emit('private_chat', {
-                    message: message,
-                });
+                socket.join(Room.id.toString());
             })
             .catch(err => console.log(err));
+    });
+
+    // when a user sends a message, send it only to the sockets in their room
+    socket.on('private_chat', (data) => {
+        Room.findOne({
+            where: {
+                [Op.or]: [
+                    { firstNickname: data.first, secondNickname: data.second },
+                    { firstNickname: data.second, secondNickname: data.first },
+                ],
+            },
+        })
+            .then(room => {
+                io.to(Room.id.toString()).emit('messageReceived', data.message);
+            })
+            .catch(err => console.log(err));
+
     });
 });
 
