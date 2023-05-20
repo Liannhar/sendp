@@ -186,7 +186,7 @@ io.on('connection', (socket) => {
                     }).catch(err => console.log(err));
                 }
                 const message = data.message;
-                data.second.emit('private_chat', {
+                io.to(data.second).emit('private_chat', {
                     message: message,
                 });
             })
