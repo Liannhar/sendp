@@ -148,7 +148,7 @@ io.on('connection', (socket) => {
         })
             .then(room => {
                 if (!room) {
-                    Room.create({
+                    room = Room.create({
                         firstNickname: data.first,
                         secondNickname: data.second
                     }).then(res => {
@@ -156,7 +156,7 @@ io.on('connection', (socket) => {
                         console.log("Room create successful")
                     }).catch(err => console.log(err));
                 }
-                socket.join(Room.id.toString());
+                socket.join(room.id.toString());
             })
             .catch(err => console.log(err));
     });
@@ -172,7 +172,7 @@ io.on('connection', (socket) => {
             },
         })
             .then(room => {
-                io.to(Room.id.toString()).emit('messageReceived', data.message);
+                io.to(room.id.toString()).emit('messageReceived', data.message);
             })
             .catch(err => console.log(err));
 
