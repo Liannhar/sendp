@@ -140,7 +140,7 @@ io.on('connection', (socket) => {
     var obj = {
         table: []
     };
-    let currentRoom;
+    let currentRoom="WHERE";
     socket.on('joinRoom', (data) => {
         Room.findOne({
             where: {
@@ -161,9 +161,9 @@ io.on('connection', (socket) => {
                     }).catch(err => console.log(err));
                 }
                 console.log("join")
-                currentRoom = room
-                console.log(currentRoom.id.toString())
-                socket.join(currentRoom.id.toString());
+                currentRoom = room.id.toString()
+                console.log(currentRoom)
+                socket.join(currentRoom);
             })
             .catch(err => console.log(err));
     });
