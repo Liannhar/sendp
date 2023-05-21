@@ -136,7 +136,9 @@ const server = http.createServer(app);
 const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
-
+    const data = {};
+    data.table = [];
+    let currentRoom;
     socket.on('joinRoom', (data) => {
         Room.findOne({
             where: {
@@ -157,13 +159,14 @@ io.on('connection', (socket) => {
                     }).catch(err => console.log(err));
                 }
                 console.log("join")
-                socket.join(room.id.toString());
+                currentRoom = room
+                socket.join(currentRoom.id.toString());
             })
             .catch(err => console.log(err));
     });
 
     // when a user sends a message, send it only to the sockets in their room
-    socket.on('private_chat', (data) => {
+   /* socket.on('private_chat', (data) => {
         Room.findOne({
             where: {
                 [Op.or]: [
@@ -173,11 +176,26 @@ io.on('connection', (socket) => {
             },
         })
             .then(room => {
+                const obj = {
+                    nickname: data.first,
+                    message:data.message
+                };
+                data.table.push(obj)
+                room.update({message: JSON.stringify(data)})
                 io.to(room.id.toString()).emit('private_chat', data.type,data.message, data.first);
             })
             .catch(err => console.log(err));
-
+    });*/
+    socket.on('private_chat', (data) => {
+        const obj = {
+            nickname: data.first,
+            message:data.message
+        };
+        data.table.push(obj)
+        currentRoom.update({message: JSON.stringify(data)})
+        io.to(currentRoom.id.toString()).emit('private_chat', data.type,data.message, data.first);
     });
+
 });
 
 // Start server
