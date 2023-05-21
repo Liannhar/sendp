@@ -160,6 +160,7 @@ io.on('connection', (socket) => {
                 }
                 console.log("join")
                 currentRoom = room
+                console.log(currentRoom.id.toString())
                 socket.join(currentRoom.id.toString());
             })
             .catch(err => console.log(err));
