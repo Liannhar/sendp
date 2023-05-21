@@ -31,6 +31,7 @@ const User = sequelize.define('User', {
 const Room = sequelize.define('Rooms',{
     firstNickname:Sequelize.STRING,
     secondNickname:Sequelize.STRING,
+    message:Sequelize.JSONB,
 })
 
 // Sync database
