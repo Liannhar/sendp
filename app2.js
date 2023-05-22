@@ -86,7 +86,6 @@ app.get('/rooms', async (req, res) => {
 app.get('/messages', async (req, res) => {
     const { id } = req.query;
     try {
-        console.log("MESSAGES")
         const messages = await Message.findAll({
             where: { idRoom: id || '' }
         });
@@ -189,7 +188,6 @@ const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
     var obj = {
-        table: []
     };
     let currentRoom;
     socket.on('joinRoom', (data) => {
@@ -218,7 +216,7 @@ io.on('connection', (socket) => {
             .catch(err => console.log(err));
     });
     socket.on('private_chat', (data) => {
-        obj.table.push({
+        obj.push({
             message:data.message
         });
         Message.create({
