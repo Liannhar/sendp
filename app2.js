@@ -86,6 +86,7 @@ app.get('/rooms', async (req, res) => {
 app.get('/messages', async (req, res) => {
     const { id } = req.query;
     try {
+        console.log("MESSAGES")
         const messages = await Message.findAll({
             where: { idRoom: id || '' }
         });
