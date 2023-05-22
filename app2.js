@@ -187,7 +187,6 @@ const server = http.createServer(app);
 const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
-    const obj= []
     let currentRoom;
     socket.on('joinRoom', (data) => {
         Room.findOne({
