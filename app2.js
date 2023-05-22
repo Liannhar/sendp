@@ -180,7 +180,7 @@ io.on('connection', (socket) => {
                 ],
             },
         })
-            .then(room => {
+            .then(async room => {
                 if (!room) {
                     room = Room.create({
                         firstNickname: data.first,
@@ -191,7 +191,7 @@ io.on('connection', (socket) => {
                     }).catch(err => console.log(err));
                 }
                 console.log("join")
-                currentRoom = room.id
+                currentRoom =await room.id
                 socket.join(currentRoom.toString())
             })
             .catch(err => console.log(err));
