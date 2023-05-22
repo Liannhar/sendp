@@ -89,6 +89,7 @@ app.get('/messages', async (req, res) => {
         const messages = await Message.findAll({
             where: { idRoom: id || '' }
         });
+        console.log("find massages")
         res.json(messages);
     } catch (error) {
         console.error(error);
