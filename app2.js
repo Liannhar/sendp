@@ -37,7 +37,7 @@ const Message = sequelize.define('Message',{
     idRoom:Sequelize.INTEGER,
     sander:Sequelize.STRING,
     type:Sequelize.STRING,
-    message:Sequelize.JSONB,
+    message:Sequelize.JSON,
 })
 
 // Sync database
