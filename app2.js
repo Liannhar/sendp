@@ -219,7 +219,6 @@ io.on('connection', (socket) => {
         obj.table.push({
             message:data.message
         });
-        currentRoom.update({message: JSON.stringify(data)})
         Message.create({
             idRoom:currentRoom,
             sander:data.first,
