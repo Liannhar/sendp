@@ -187,9 +187,7 @@ const server = http.createServer(app);
 const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
-    var obj = {
-        table: []
-    };
+    const obj= []
     let currentRoom;
     socket.on('joinRoom', (data) => {
         Room.findOne({
@@ -217,7 +215,7 @@ io.on('connection', (socket) => {
             .catch(err => console.log(err));
     });
     socket.on('private_chat', (data) => {
-        obj.table.push({
+        obj.push({
             message:data.message
         });
         Message.create({
