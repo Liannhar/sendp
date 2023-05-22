@@ -53,17 +53,36 @@ app.get('/users', async (req, res) => {
     }
 });
 app.get('/rooms', async (req, res) => {
-    const { nickname } = req.query;
+    const { myNickname,nickname } = req.query;
     try {
-        const rooms = await Room.findAll({
-            where: { nickname: nickname || '' }
-        });
-        res.json(rooms);
+        Room.findOne({
+            where: {
+                [Op.or]: [
+                    { firstNickname: myNickname, secondNickname: nickname },
+                    { firstNickname: nickname, secondNickname: myNickname },
+                ],
+            },
+        })
+            .then(async room => {
+                if (!room) {
+                    room = Room.create({
+                        firstNickname: myNickname,
+                        secondNickname: nickname
+                    }).then(res => {
+                        console.log(res);
+                        console.log("Room create successful")
+                    }).catch(err => console.log(err));
+                }
+                console.log("find Room")
+                res.json(await room);
+            })
+            .catch(err => console.log(err));
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Ошибка при получении комнат' });
     }
 });
+
 app.get('/messages', async (req, res) => {
     const { id } = req.query;
     try {
