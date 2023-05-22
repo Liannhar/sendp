@@ -31,6 +31,12 @@ const User = sequelize.define('User', {
 const Room = sequelize.define('Rooms',{
     firstNickname:Sequelize.STRING,
     secondNickname:Sequelize.STRING,
+})
+
+const Message = sequelize.define('Message',{
+    idRoom:Sequelize.INTEGER,
+    sander:Sequelize.STRING,
+    type:Sequelize.STRING,
     message:Sequelize.JSONB,
 })
 
@@ -44,6 +50,30 @@ app.get('/users', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Ошибка при получении пользователей' });
+    }
+});
+app.get('/rooms', async (req, res) => {
+    const { nickname } = req.query;
+    try {
+        const rooms = await Room.findAll({
+            where: { nickname: nickname || '' }
+        });
+        res.json(rooms);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Ошибка при получении комнат' });
+    }
+});
+app.get('/messages', async (req, res) => {
+    const { id } = req.query;
+    try {
+        const messages = await Message.findAll({
+            where: { idRoom: id || '' }
+        });
+        res.json(messages);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Ошибка при получении сообщений' });
     }
 });
 
@@ -140,7 +170,7 @@ io.on('connection', (socket) => {
     var obj = {
         table: []
     };
-    let currentRoom="WHERE";
+    let currentRoom;
     socket.on('joinRoom', (data) => {
         Room.findOne({
             where: {
@@ -161,41 +191,26 @@ io.on('connection', (socket) => {
                     }).catch(err => console.log(err));
                 }
                 console.log("join")
-                currentRoom = room.id.toString()
-                console.log(currentRoom)
-                socket.join(currentRoom);
+                currentRoom = room.id
+                socket.join(currentRoom.toString())
             })
             .catch(err => console.log(err));
     });
-
-    // when a user sends a message, send it only to the sockets in their room
-   /* socket.on('private_chat', (data) => {
-        Room.findOne({
-            where: {
-                [Op.or]: [
-                    { firstNickname: data.first, secondNickname: data.second },
-                    { firstNickname: data.second, secondNickname: data.first },
-                ],
-            },
-        })
-            .then(room => {
-                const obj = {
-                    nickname: data.first,
-                    message:data.message
-                };
-                data.table.push(obj)
-                room.update({message: JSON.stringify(data)})
-                io.to(room.id.toString()).emit('private_chat', data.type,data.message, data.first);
-            })
-            .catch(err => console.log(err));
-    });*/
     socket.on('private_chat', (data) => {
         obj.table.push({
-            nickname: data.first,
             message:data.message
         });
         currentRoom.update({message: JSON.stringify(data)})
-        io.to(currentRoom.id.toString()).emit('private_chat', data.type,data.message, data.first);
+        Message.create({
+            idRoom:currentRoom,
+            sander:data.first,
+            type:data.type,
+            message:JSON.stringify(data.message),
+        }).then(res => {
+            console.log(res);
+            console.log("Message create successful")
+        }).catch(err => console.log(err));
+        io.to(currentRoom.toString()).emit('private_chat', data.type,data.message, data.first);
     });
 
 });
