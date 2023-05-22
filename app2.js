@@ -188,6 +188,7 @@ const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
     var obj = {
+        table: []
     };
     let currentRoom;
     socket.on('joinRoom', (data) => {
@@ -216,7 +217,7 @@ io.on('connection', (socket) => {
             .catch(err => console.log(err));
     });
     socket.on('private_chat', (data) => {
-        obj.push({
+        obj.table.push({
             message:data.message
         });
         Message.create({
