@@ -215,14 +215,11 @@ io.on('connection', (socket) => {
             .catch(err => console.log(err));
     });
     socket.on('private_chat', (data) => {
-        obj.push({
-            message:data.message
-        });
         Message.create({
             idRoom:currentRoom,
             sander:data.first,
             type:data.type,
-            message:JSON.stringify(obj),
+            message:JSON.stringify({ message:data.message}),
         }).then(res => {
             console.log(res);
             console.log("Message create successful")
