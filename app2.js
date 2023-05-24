@@ -177,6 +177,7 @@ app.post('/login', function(req, res, next) {
 });
 
 app.get('/logout', (req, res) => {
+    console.log("Logout");
     req.logout();
     res.redirect('/');
 });
