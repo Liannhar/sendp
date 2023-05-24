@@ -37,7 +37,7 @@ const Message = sequelize.define('Message',{
     idRoom:Sequelize.INTEGER,
     sander:Sequelize.STRING,
     type:Sequelize.STRING,
-    message:Sequelize.STRING,
+    message:Sequelize.JSON,
 })
 
 // Sync database
@@ -219,7 +219,7 @@ io.on('connection', (socket) => {
             idRoom:currentRoom,
             sander:data.first,
             type:data.type,
-            message:data.message,
+            message:JSON.stringify({ message:data.message}),
         }).then(res => {
             console.log(res);
             console.log("Message create successful")
