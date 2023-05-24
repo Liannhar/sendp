@@ -219,7 +219,7 @@ io.on('connection', (socket) => {
             idRoom:currentRoom,
             sander:data.first,
             type:data.type,
-            message:JSON.stringify({ message:data.message}),
+            message:data.message,
         }).then(res => {
             console.log(res);
             console.log("Message create successful")
