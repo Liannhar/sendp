@@ -38,6 +38,7 @@ const Message = sequelize.define('Message',{
     sander:Sequelize.STRING,
     type:Sequelize.STRING,
     message:Sequelize.JSON,
+    length:Sequelize.INTEGER
 })
 
 // Sync database
@@ -226,7 +227,7 @@ io.on('connection', (socket) => {
             console.log("Message create successful")
         }).catch(err => console.log(err));
         console.log("Sand message")
-        io.to(currentRoom.toString()).emit('private_chat', data.type,data.message, data.first);
+        io.to(currentRoom.toString()).emit('private_chat', data.type,data.message, data.first,data.length);
     });
 
 });
