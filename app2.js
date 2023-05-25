@@ -5,7 +5,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 const { Op } = require('sequelize');
-const {hash, compare, genSalt, hash} = require("bcrypt");
+const {compare, genSalt, hash} = require("bcrypt");
 
 const app = express();
 
