@@ -110,13 +110,13 @@ passport.use("local",new LocalStrategy( (nickname, password, done) => {
                 user.password = await hash(user.password, salt);
                 console.log("password salt")
             });
-            const newUser = await User.create({
+            User.create({
                 nickname: nickname,
                 password:password
             }).then(res=>{
                 console.log(res);
                 console.log("Create successful");
-                return done(null, newUser);
+                return done(null, res);
             }).catch(err=>{console.log(err)
                 return done(null, false, "Incorrect");});
 
