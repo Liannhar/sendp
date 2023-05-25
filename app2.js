@@ -236,10 +236,10 @@ io.on('connection', (socket) => {
             message:JSON.stringify({ message:data.message}),
         }).then(res => {
             console.log(res);
-            console.log("Message create successful")
-            console.log("Sand message")
-            console.log(currentRoom)
-            io.to(currentRoom.toString()).emit('private_chat', data.type,data.message, data.first,data.length);
+            console.log("Message create successful");
+            console.log("Sand message");
+            console.log(currentRoom);
+            io.to(currentRoom.toString()).emit('private_chat', data.type,res.message, data.first,data.length);
         }).catch(err => console.log(err));
 
     });
@@ -252,5 +252,5 @@ const port = process.env.PORT || 3000;
 
 server.listen(port, "0.0.0.0", () => {
     console.log(`Server is running on port ${port}`);
-    console.log("asad");
+
 });
