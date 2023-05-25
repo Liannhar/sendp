@@ -117,7 +117,6 @@ passport.use("local",new LocalStrategy( (nickname, password, done) => {
                 console.log(res);
                 console.log("Create successful")
             }).catch(err=>console.log(err));
-            console.log(newUser.nickname+" OK new User")
             return done(null, newUser);
         }
         compare(password,user.password , function(err, result) {
