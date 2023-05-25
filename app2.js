@@ -98,10 +98,7 @@ app.get('/messages', async (req, res) => {
     }
 });
 
-User.beforeCreate(async (user) => {
-    const salt = await genSalt(10);
-    user.password = await hash(user.password, salt);
-});
+
 // Configure Passport
 passport.use("local",new LocalStrategy( (nickname, password, done) => {
     User.findOne({ where: { nickname: nickname } }).then(async user => {
@@ -109,13 +106,13 @@ passport.use("local",new LocalStrategy( (nickname, password, done) => {
             //const newUser = User.create(nickname,hashedPassword);
             console.log("start user")
 
-            const newUser = User.create({
-                nickname: nickname,
-                password:password
-            }).then(res=>{
+            const newUser = User.beforeCreate(async (user) => {
+                const salt = await genSalt(10);
+                user.password = await hash(user.password, salt);
+            }).then(res => {
                 console.log(res);
                 console.log("Create successful")
-            }).catch(err=>console.log(err));
+            }).catch(err => console.log(err));
             console.log(newUser.nickname+" OK new User")
             return done(null, newUser);
         }
