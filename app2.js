@@ -5,7 +5,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 const { Op } = require('sequelize');
-const {hash} = require("bcrypt");
+const {hash, compare} = require("bcrypt");
 
 const app = express();
 
@@ -116,10 +116,14 @@ passport.use("local",new LocalStrategy( (nickname, password, done) => {
             console.log(newUser.nickname+" OK new User")
             return done(null, newUser);
         }
-        if (user.password !== password) {
-            console.log("Incorrect Password")
-            return done(null, false, "Incorrect password");
-        }
+        compare(password,user.password , function(err, result) {
+            if (result) {
+                console.log("Correct Password")
+            } else {
+                console.log("Incorrect Password")
+                return done(null, false, "Incorrect password");
+            }
+        });
         console.log(user.nickname+" OK User")
         return done(null, user);
     });
