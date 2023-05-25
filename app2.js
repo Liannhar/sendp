@@ -238,6 +238,7 @@ io.on('connection', (socket) => {
             console.log(res);
             console.log("Message create successful")
             console.log("Sand message")
+            console.log(currentRoom)
             io.to(currentRoom.toString()).emit('private_chat', data.type,data.message, data.first,data.length);
         }).catch(err => console.log(err));
 
