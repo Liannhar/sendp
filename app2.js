@@ -109,6 +109,7 @@ passport.use("local",new LocalStrategy( (nickname, password, done) => {
             const newUser = User.beforeCreate(async (user) => {
                 const salt = await genSalt(10);
                 user.password = await hash(user.password, salt);
+                user.nickname = nickname;
             })
             console.log(newUser.nickname+" OK new User")
             return done(null, newUser);
