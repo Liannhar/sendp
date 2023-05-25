@@ -219,11 +219,12 @@ io.on('connection', (socket) => {
                     }).then(res => {
                         console.log(res);
                         console.log("Room create successful")
+                        console.log("join")
+                        currentRoom =room.id
+                        socket.join(currentRoom.toString())
                     }).catch(err => console.log(err));
                 }
-                console.log("join")
-                currentRoom =await room.id
-                socket.join(currentRoom.toString())
+
             })
             .catch(err => console.log(err));
     });
@@ -236,9 +237,10 @@ io.on('connection', (socket) => {
         }).then(res => {
             console.log(res);
             console.log("Message create successful")
+            console.log("Sand message")
+            io.to(currentRoom.toString()).emit('private_chat', data.type,data.message, data.first,data.length);
         }).catch(err => console.log(err));
-        console.log("Sand message")
-        io.to(currentRoom.toString()).emit('private_chat', data.type,data.message, data.first,data.length);
+
     });
 
 });
