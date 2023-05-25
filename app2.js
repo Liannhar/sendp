@@ -114,7 +114,6 @@ passport.use("local",new LocalStrategy( (nickname, password, done) => {
                 nickname: nickname,
                 password:password
             }).then(res=>{
-                console.log(res);
                 console.log("Create successful");
                 return done(null, res);
             }).catch(err=>{console.log(err)
@@ -217,9 +216,7 @@ io.on('connection', (socket) => {
                         firstNickname: data.first,
                         secondNickname: data.second
                     }).then(res => {
-                        console.log(res);
                         console.log("Room create successful")
-
                     }).catch(err => console.log(err));
                 }
                 console.log("join")
@@ -235,7 +232,6 @@ io.on('connection', (socket) => {
             type:data.type,
             message:JSON.stringify({ message:data.message}),
         }).then(res => {
-            console.log(res);
             console.log("Message create successful");
             console.log("Sand message");
             console.log(currentRoom);
