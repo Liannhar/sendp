@@ -219,12 +219,12 @@ io.on('connection', (socket) => {
                     }).then(res => {
                         console.log(res);
                         console.log("Room create successful")
-                        console.log("join")
-                        currentRoom =room.id
-                        socket.join(currentRoom.toString())
+
                     }).catch(err => console.log(err));
                 }
-
+                console.log("join")
+                currentRoom =room.id
+                socket.join(currentRoom.toString())
             })
             .catch(err => console.log(err));
     });
