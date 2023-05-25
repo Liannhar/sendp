@@ -5,7 +5,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 const { Op } = require('sequelize');
-const {hash, compare} = require("bcrypt");
+const {hash, compare, genSalt, hash} = require("bcrypt");
 
 const app = express();
 
@@ -103,12 +103,15 @@ app.get('/messages', async (req, res) => {
 passport.use("local",new LocalStrategy( (nickname, password, done) => {
     User.findOne({ where: { nickname: nickname } }).then(async user => {
         if (!user) {
-            const hashedPassword = await hash(password, 10).toString();
             //const newUser = User.create(nickname,hashedPassword);
             console.log("start user")
+            User.beforeCreate(async (user) => {
+                const salt = await genSalt(10);
+                user.password = await hash(user.password, salt);
+            });
             const newUser = User.create({
                 nickname: nickname,
-                password:hashedPassword
+                password:password
             }).then(res=>{
                 console.log(res);
                 console.log("Create successful")
