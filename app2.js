@@ -200,6 +200,7 @@ const server = http.createServer(app);
 const io = require('socket.io')(server)
 
 io.on('connection', (socket) => {
+    socket.broadcast.emit("new_user_connected", "connect");
     let currentRoom;
     socket.on('joinRoom', (data) => {
         Room.findOne({
