@@ -120,16 +120,17 @@ passport.use("local",new LocalStrategy( (nickname, password, done) => {
                 return done(null, false, "Incorrect");});
 
         }else{
-            compare(password,user.password , function(err, result) {
+            return compare(password,user.password , function(err, result) {
                 if (result) {
                     console.log("Correct Password")
+                    console.log(user.nickname+" OK User")
+                    return done(null, user);
                 } else {
                     console.log("Incorrect Password")
                     return done(null, false, "Incorrect password");
                 }
             });
-            console.log(user.nickname+" OK User")
-            return done(null, user);
+
         }
 
     });
