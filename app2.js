@@ -221,7 +221,7 @@ io.on('connection', (socket) => {
                     }).catch(err => console.log(err));
                 }
                 console.log("join")
-                currentRoom =room.id
+                currentRoom =await room.id
                 socket.join(currentRoom.toString())
             })
             .catch(err => console.log(err));
@@ -250,5 +250,4 @@ const port = process.env.PORT || 3000;
 
 server.listen(port, "0.0.0.0", () => {
     console.log(`Server is running on port ${port}`);
-    console.log("server...")
 });
