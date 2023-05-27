@@ -213,7 +213,7 @@ io.on('connection', (socket) => {
         })
             .then(async room => {
                 if (!room) {
-                    room = Room.create({
+                    room = await Room.create({
                         firstNickname: data.first,
                         secondNickname: data.second
                     }).then(res => {
