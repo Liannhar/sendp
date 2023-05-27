@@ -176,7 +176,7 @@ app.post('/login', function(req, res, next) {
             return res.status(401).json(info);
         }
         else{
-            req.logIn(user, function(err) {
+            return req.logIn(user, function(err) { // Добавлено return
                 if (err) {
                     return next(err);
                 }
