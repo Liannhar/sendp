@@ -175,16 +175,18 @@ app.post('/login', function(req, res, next) {
             // Handle the case when the user is not found or the password is incorrect
             return res.status(401).json(info);
         }
-        req.logIn(user, function(err) {
-            if (err) {
-                return next(err);
-            }
-            // Create a new LoginResponse object with the user's information.
-            const loginResponse = new LoginResponse(req.user);
+        else{
+            req.logIn(user, function(err) {
+                if (err) {
+                    return next(err);
+                }
+                // Create a new LoginResponse object with the user's information.
+                const loginResponse = new LoginResponse(req.user);
 
-            // Send the LoginResponse object as the response.
-            res.json(loginResponse);
-        });
+                // Send the LoginResponse object as the response.
+                res.json(loginResponse);
+            });
+        }
     })(req, res, next);
 });
 
