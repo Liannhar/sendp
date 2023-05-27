@@ -185,6 +185,7 @@ app.post('/login', function(req, res, next) {
 
                 // Send the LoginResponse object as the response.
                 res.json(loginResponse);
+                return res;
             });
         }
     })(req, res, next);
